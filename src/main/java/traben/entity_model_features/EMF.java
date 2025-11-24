@@ -28,6 +28,8 @@ public class EMF {
     public static boolean forgeHadLoadingError = false;
     public static boolean testedForge = !ETF.isForge();
     public static boolean tempDisableModelModifications = false;
+    public static boolean PAL_DETECTED;
+    public static boolean BC_DETECTED;
 
     private static TConfigHandler<EMFConfig> configHandler = null;
 
@@ -40,6 +42,9 @@ public class EMF {
     }
 
     public static void init() {
+        PAL_DETECTED = ETF.isThisModLoaded("player_animation_library");
+        BC_DETECTED = ETF.isThisModLoaded("bendable_cuboids");
+
         ETFEntityRenderState.setEtfRenderStateConstructor("for EMF",
                 etf -> new EMFEntityRenderStateViaReference((EMFEntity) etf));
 

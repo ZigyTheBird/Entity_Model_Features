@@ -47,6 +47,7 @@ import traben.entity_model_features.EMFManager;
 import traben.entity_model_features.mixin.mixins.accessor.Mixin_GuiEntityTester;
 import traben.entity_model_features.mixin.mixins.accessor.MinecraftClientAccessor;
 import traben.entity_model_features.mod_compat.IrisShadowPassDetection;
+import traben.entity_model_features.mod_compat.PALCompat;
 import traben.entity_model_features.models.EMFModelMappings;
 import traben.entity_model_features.models.EMFModel_ID;
 import traben.entity_model_features.models.animation.state.EMFEntityRenderState;
@@ -98,6 +99,7 @@ public final class EMFAnimationEntityContext {
 
     public static boolean isEntityAnimPaused(){
         if (emfState == null) return false;
+        if (EMF.PAL_DETECTED && PALCompat.shouldPauseEntityAnim(emfState)) return true;
         return entitiesPaused.contains(emfState.uuid());
     }
 
@@ -490,6 +492,11 @@ public final class EMFAnimationEntityContext {
     public static boolean isEntityForcedToVanillaModel(){
         if (emfState == null) return false;
         if (entitiesToForceVanillaModel.contains(emfState.uuid())) return true;
+        System.out.println("Checking if entity should be forced to vanilla model");
+        if (EMF.PAL_DETECTED && EMF.BC_DETECTED && PALCompat.shouldPauseEntityAnim(emfState)) {
+            System.out.println("Forced to vanilla model");
+            return true;
+        }
         return EMF.config().getConfig().onlyClientPlayerModel
                 && EMFAnimationEntityContext.getEMFEntity() instanceof Player player && !player.isLocalPlayer();
     }
